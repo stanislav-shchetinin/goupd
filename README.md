@@ -65,3 +65,25 @@ github.com/redis/go-redis    v6.15.9   v9.5.1    major (-> github.com/redis/go-r
 ```bash
 go test ./...
 ```
+
+## Разработка
+
+В репозитории есть `Makefile` с типовыми целями:
+
+```bash
+make build      # собрать бинарь goupd
+make test       # go test -race -cover ./...
+make fmt        # отформатировать код (gofmt)
+make fmt-check  # проверить форматирование без изменений
+make vet        # go vet ./...
+make lint       # golangci-lint run (нужен golangci-lint)
+make tidy       # go mod tidy
+make all        # fmt + vet + test + build
+```
+
+Дополнительно настроены:
+
+- `.golangci.yml` — конфигурация `golangci-lint` (линтеры + форматтеры `gofmt`/`goimports`).
+- `.editorconfig` — единый стиль отступов и окончаний строк.
+- `.github/workflows/ci.yml` — CI: проверка `gofmt`, `go vet`, тесты с `-race` и линт на каждый push/PR.
+- `.github/dependabot.yml` — автообновление зависимостей Go и GitHub Actions.
