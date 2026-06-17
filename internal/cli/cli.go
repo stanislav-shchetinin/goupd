@@ -28,8 +28,8 @@ func Parse(args []string, out io.Writer) (*Config, error) {
 	fs.DurationVar(&cfg.Timeout, "timeout", 2*time.Minute, "overall timeout for network operations")
 
 	fs.Usage = func() {
-		fmt.Fprintf(out, "goupd - report Go module info and available dependency updates\n\n")
-		fmt.Fprintf(out, "Usage:\n  goupd [flags] <git-repo-url|local-path>\n\nFlags:\n")
+		_, _ = fmt.Fprintf(out, "goupd - report Go module info and available dependency updates\n\n")
+		_, _ = fmt.Fprintf(out, "Usage:\n  goupd [flags] <git-repo-url|local-path>\n\nFlags:\n")
 		fs.PrintDefaults()
 	}
 

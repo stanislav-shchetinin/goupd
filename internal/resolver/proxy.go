@@ -14,8 +14,10 @@ import (
 
 const DefaultProxy = "https://proxy.golang.org"
 
-const maxMajorProbe = 50
-const maxMajorGap = 3
+const (
+	maxMajorProbe = 50
+	maxMajorGap   = 3
+)
 
 type ProxyClient struct {
 	BaseURL string
@@ -80,7 +82,7 @@ func (c *ProxyClient) latest(ctx context.Context, modPath string) (version strin
 	if err != nil {
 		return "", false, err
 	}
-	defer resp.Body.Close()
+	defer func() { _ = resp.Body.Close() }()
 
 	switch resp.StatusCode {
 	case http.StatusOK:

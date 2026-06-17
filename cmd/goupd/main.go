@@ -7,14 +7,14 @@ import (
 
 	"goupd/internal/cli"
 	"goupd/internal/gomod"
-	"goupd/internal/report"
 	"goupd/internal/repo"
+	"goupd/internal/report"
 	"goupd/internal/resolver"
 )
 
 func main() {
 	if err := run(os.Args[1:]); err != nil {
-		fmt.Fprintf(os.Stderr, "goupd: %v\n", err)
+		_, _ = fmt.Fprintf(os.Stderr, "goupd: %v\n", err)
 		os.Exit(1)
 	}
 }

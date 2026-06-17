@@ -23,9 +23,9 @@ func TestClassify(t *testing.T) {
 
 func TestMajorSuffix(t *testing.T) {
 	tests := []struct {
-		path    string
-		wantN   int
-		wantOK  bool
+		path   string
+		wantN  int
+		wantOK bool
 	}{
 		{"github.com/foo/bar", 0, false},
 		{"github.com/foo/bar/v2", 2, true},
