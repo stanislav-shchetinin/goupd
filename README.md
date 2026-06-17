@@ -60,6 +60,48 @@ github.com/spf13/cobra       v1.7.0    v1.8.1    minor
 github.com/redis/go-redis    v6.15.9   v9.5.1    major (-> github.com/redis/go-redis/v9)
 ```
 
+## Архитектура
+
+Приложение построено как линейный конвейер: точка входа `cmd/goupd` оркеструет вызовы независимых пакетов из `internal/`, передавая результат каждого шага следующему.
+
+```mermaid
+flowchart LR
+    input["Git-репозиторий / локальный путь"] --> cli["cli: разбор и валидация флагов"]
+    cli --> repo["repo: git clone --depth 1 / локальный каталог"]
+    repo --> gomod["gomod: парсинг go.mod"]
+    gomod --> resolver
+
+    subgraph resolver ["resolver: поиск доступных обновлений"]
+        direction TB
+        golist["golist: go list -m -u -json all (minor/patch)"]
+        proxy["proxy: Go module proxy, пути /vN (major v2+)"]
+        merge["resolver: merge + Classify через semver"]
+        golist --> merge
+        proxy --> merge
+    end
+
+    resolver --> report["report: text-таблица / JSON"]
+    report --> output["Имя модуля, версия Go, список обновлений"]
+```
+
+### Пакеты и зоны ответственности
+
+| Пакет | Файлы | Ответственность |
+| --- | --- | --- |
+| `cmd/goupd` | `main.go` | Точка входа. Оркеструет весь конвейер (`run`), обрабатывает ошибки и код возврата, выбирает формат вывода. |
+| `internal/cli` | `cli.go` | Разбор и валидация аргументов и флагов командной строки в структуру `Config`. |
+| `internal/repo` | `repo.go` | Получение исходников: `git clone --depth 1` во временный каталог (или прямое использование локального пути) и возврат функции очистки. |
+| `internal/gomod` | `gomod.go` | Парсинг `go.mod` через `golang.org/x/mod/modfile` в структуру `Module` (путь модуля, версия Go, `require`, `replace`). |
+| `internal/resolver` | `golist.go`, `proxy.go`, `resolver.go` | Определение доступных обновлений. `golist` — обёртка над `go list -m -u -json all` (обновления в рамках текущего мажора); `proxy` — пробинг Go module proxy по путям `path/vN` для мажорных версий; `resolver` — слияние результатов и классификация (`patch`/`minor`/`major`) через `golang.org/x/mod/semver` в `[]Update`. |
+| `internal/report` | `report.go` | Рендеринг итогового отчёта (`Report`) в человекочитаемую таблицу или JSON. |
+
+### Принципы
+
+- Пакеты в `internal/` не зависят друг от друга (кроме `report`, который импортирует тип `Update` из `resolver`); связывает их только `cmd/goupd`.
+- Каждый шаг конвейера имеет узкий публичный интерфейс (`Parse`, `Clone`, `Resolve`, `WriteText`/`WriteJSON`), что упрощает тестирование в изоляции.
+- Сетевые сбои при пробинге мажорных версий не фатальны — они просто не добавляют мажорный апдейт в результат.
+
+
 ## Тесты
 
 ```bash
