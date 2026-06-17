@@ -42,7 +42,9 @@ func WriteText(w io.Writer, r Report) error {
 	}
 
 	tw := tabwriter.NewWriter(w, 0, 0, 3, ' ', 0)
-	fmt.Fprintln(tw, "DEPENDENCY\tCURRENT\tLATEST\tTYPE\t")
+	if _, err := fmt.Fprintln(tw, "DEPENDENCY\tCURRENT\tLATEST\tTYPE\t"); err != nil {
+		return err
+	}
 	for _, u := range r.Updates {
 		typeCol := string(u.Type)
 		if u.Type == resolver.Major && u.LatestPath != "" && u.LatestPath != u.Path {
@@ -52,7 +54,9 @@ func WriteText(w io.Writer, r Report) error {
 		if u.Indirect {
 			dep += " (indirect)"
 		}
-		fmt.Fprintf(tw, "%s\t%s\t%s\t%s\t\n", dep, u.Current, u.Latest, typeCol)
+		if _, err := fmt.Fprintf(tw, "%s\t%s\t%s\t%s\t\n", dep, u.Current, u.Latest, typeCol); err != nil {
+			return err
+		}
 	}
 	return tw.Flush()
 }
