@@ -1,0 +1,12 @@
+/goupd
+
+/dist/
+*.exe
+
+*.test
+*.out
+
+.env
+.DS_Store
+.idea/
+.vscode/
