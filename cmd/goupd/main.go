@@ -7,8 +7,8 @@ import (
 
 	"goupd/internal/cli"
 	"goupd/internal/gomod"
-	"goupd/internal/report"
 	"goupd/internal/repo"
+	"goupd/internal/report"
 	"goupd/internal/resolver"
 )
 

@@ -18,19 +18,19 @@ const (
 )
 
 type Update struct {
-	Path     string     `json:"path"`
-	Current  string     `json:"current"`
-	Latest   string     `json:"latest"`
-	Type     UpdateType `json:"type"`
-	Indirect bool       `json:"indirect"`
-	LatestPath string `json:"latestPath,omitempty"`
+	Path       string     `json:"path"`
+	Current    string     `json:"current"`
+	Latest     string     `json:"latest"`
+	Type       UpdateType `json:"type"`
+	Indirect   bool       `json:"indirect"`
+	LatestPath string     `json:"latestPath,omitempty"`
 }
 
 type Options struct {
-	Dir string
+	Dir          string
 	IncludeMajor bool
-	DirectOnly bool
-	Proxy *ProxyClient
+	DirectOnly   bool
+	Proxy        *ProxyClient
 }
 
 func Resolve(ctx context.Context, mod *gomod.Module, opts Options) ([]Update, error) {

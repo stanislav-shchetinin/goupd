@@ -11,8 +11,8 @@ import (
 )
 
 type goListModule struct {
-	Path    string
-	Version string
+	Path     string
+	Version  string
 	Update   *goListUpdate
 	Indirect bool
 	Main     bool
