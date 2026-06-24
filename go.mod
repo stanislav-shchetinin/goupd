@@ -1,5 +1,5 @@
 module goupd
 
-go 1.22
+go 1.25.0
 
-require golang.org/x/mod v0.17.0
+require golang.org/x/mod v0.37.0
